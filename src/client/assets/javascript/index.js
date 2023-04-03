@@ -80,15 +80,12 @@ async function handleCreateRace() {
   const race = await createRace(player_id, track_id)
   const track = race.Track
   const racers = race.Cars
-  console.log( race )
 	// Update the store with the race id
   Object.assign(store, {['race_id']: race.ID})
 	// Render UI for the race
 	renderAt('#race', renderRaceStartView(track,racers))
 	// The race has been created, now start the countdown
   await runCountdown()
-  console.log(`Race: ${race.ID}`)
-  console.log(race.ID - 1)
   startRace(race.ID-1)
   runRace(race.ID-1)
 }
@@ -98,12 +95,10 @@ function runRace(raceID) {
     let interval = setInterval(() => {
       getRace(raceID)
       .then(race => {
-        console.log( race )
         if( race.status === 'in-progress') {
           renderAt('#leaderBoard', raceProgress(race.positions))
         } else {
           clearInterval(interval)
-          console.log(`RACE FINISHED: ${race}`)
           renderAt('#race', resultsView(race.positions))
           resolve(race)
         }
@@ -120,12 +115,10 @@ async function runCountdown() {
 		// wait for the DOM to load
 		await delay(1000)
 		let timer = 3
-    console.log(`TIMER: ${timer}`)
 		return new Promise(resolve => {
       // Set 1 second interval to count down
       let interval = setInterval(() => {
         document.getElementById('big-numbers').innerHTML = --timer
-        console.log(`TIMER: ${timer}`)
         if(timer === 0) { 
           clearInterval(interval) 
           resolve()
@@ -333,14 +326,14 @@ function getTracks() {
 	// GET request to `${SERVER}/api/tracks`
   return fetch(`${SERVER}/api/tracks`)
   .then(res => res.json())
-  .catch(err => console.log( err ))
+  .catch(err => console.log(`Problem with getTracks: ${err}`))
 }
 
 function getRacers() {
 	// GET request to `${SERVER}/api/cars`
   return fetch(`${SERVER}/api/cars`)
   .then(res => res.json())
-  .catch(err => console.log( err ))
+  .catch(err => console.log(`Problem with getRacers: ${err}`))
 }
 
 function createRace(player_id, track_id) {
@@ -362,7 +355,7 @@ function getRace(id) {
 	// GET request to `${SERVER}/api/races/${id}`
   return fetch(`${SERVER}/api/races/${id}`)
   .then(res => res.json())
-  .catch(err => console.log( err ))
+  .catch(err => console.log(`Problem with getRace: ${err}`))
 }
 
 function startRace(id) {
@@ -385,5 +378,5 @@ function accelerate(id) {
     ...defaultFetchOpts()
   })
   .then(res => res.json())
-  .catch(err => console.log( err ))
+  .catch(err => console.log(`Problem with accelerate: ${err}`))
 }
