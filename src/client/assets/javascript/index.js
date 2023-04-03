@@ -92,7 +92,7 @@ async function handleCreateRace() {
 
 function runRace(raceID) {
 	return new Promise(resolve => {
-    let interval = setInterval(() => {
+    const interval = setInterval(() => {
       getRace(raceID)
       .then(race => {
         if( race.status === 'in-progress') {
@@ -117,7 +117,7 @@ async function runCountdown() {
 		let timer = 3
 		return new Promise(resolve => {
       // Set 1 second interval to count down
-      let interval = setInterval(() => {
+      const interval = setInterval(() => {
         document.getElementById('big-numbers').innerHTML = --timer
         if(timer === 0) { 
           clearInterval(interval) 
@@ -273,7 +273,7 @@ function resultsView(positions) {
 }
 
 function raceProgress(positions) {
-	let userPlayer = positions.find(e => e.id == store.player_id)
+	const userPlayer = positions.find(e => e.id == store.player_id)
 	userPlayer.driver_name += " (you)"
 
 	positions = positions.sort((a, b) => (a.segment > b.segment) ? -1 : 1)
